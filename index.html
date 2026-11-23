@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Every Other Universe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one tabletop scene at night. A folded black-cardstock page opens in 3D, a handwritten caption sits under it, page controls at the bottom. Single dark look by choice. */
+:root{
+  --night:#16121d; --night-2:#251c31; --card:#0f0e12; --card-2:#1c1a21;
+  --blush:#f6aac6; --blush-deep:#d8638e; --paper:#fbf7f1; --ink:#2b2230; --muted:#b3a7c2; --lip:#b5172f;
+  --hand:"Gaegu","Comic Sans MS","Chalkboard SE",cursive;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --w:min(74vw,340px);
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1px 1px at 12% 18%,#fff8 50%,transparent 51%),
+    radial-gradient(1px 1px at 78% 12%,#fff6 50%,transparent 51%),
+    radial-gradient(1.5px 1.5px at 64% 32%,#fff5 50%,transparent 51%),
+    radial-gradient(1px 1px at 30% 70%,#fff4 50%,transparent 51%),
+    radial-gradient(1px 1px at 88% 80%,#fff5 50%,transparent 51%),
+    radial-gradient(ellipse at 50% 110%,var(--night-2),var(--night) 70%);
+  background-color:var(--night);
+  color:var(--paper); font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow-x:hidden;
+}
+.app{min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding-block:24px; text-align:center}
+.eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums; min-height:1.2em}
+
+/* ---------- cover ---------- */
+.cover{
+  appearance:none; border:0; cursor:pointer; padding:18px;
+  width:var(--w); aspect-ratio:4/3; max-width:100%;
+  background:linear-gradient(160deg,var(--card-2),var(--card)); border-radius:6px;
+  box-shadow:0 2px 0 #2c2833 inset, 0 30px 50px -20px #000c, 0 0 0 1px #000;
+  display:grid; place-items:center; transform-origin:50% 0;
+  transition:transform .8s cubic-bezier(.5,0,.3,1), opacity .6s;
+}
+.cover:focus-visible,.btn:focus-visible,.hand:focus-visible,.envelope:focus-visible{outline:3px solid var(--blush); outline-offset:4px}
+.cover.lift{transform:perspective(900px) rotateX(75deg) translateY(-30px); opacity:0}
+.cloud{
+  position:relative; width:88%; padding:22px 18px; color:var(--ink);
+  font-family:var(--hand); font-size:clamp(20px,5.6vw,26px); line-height:1.1; font-weight:700;
+  background:var(--paper); border-radius:46% 54% 42% 58% / 58% 44% 56% 42%;
+  box-shadow:0 0 0 6px var(--blush), 0 0 0 11px #f6aac688, 0 0 22px 12px #f6aac655;
+  transform:rotate(-2deg);
+}
+.tap{font-family:var(--hand); font-size:20px; color:var(--muted); animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.45}}
+
+/* ---------- 3D page ---------- */
+.scene{position:relative; width:var(--w); height:calc(var(--w)*1.12); perspective:1000px; perspective-origin:50% 10%; cursor:pointer}
+.page{position:absolute; inset:0; transition:transform .45s ease, opacity .45s ease}
+.page.leaving{transform:translateY(-40px) scale(.96); opacity:0}
+.page.entering{transform:translateY(30px); opacity:0}
+.floor{
+  position:absolute; left:0; right:0; bottom:4%; height:calc(var(--w)*.62);
+  transform-style:preserve-3d; transform:rotateX(58deg);
+  border-radius:4px; background:var(--card);
+  box-shadow:0 0 0 1px #000, 0 40px 40px -10px #0009;
+}
+.floor-art{position:absolute; inset:8px; border-radius:2px; overflow:hidden}
+.floor-art svg,.face svg,.pop svg{display:block; width:100%; height:100%}
+.back{
+  position:absolute; left:0; right:0; height:100%; bottom:100%;
+  transform-origin:50% 100%; transform-style:preserve-3d;
+  transform:rotateX(-178deg);
+  transition:transform .9s cubic-bezier(.55,0,.25,1.15);
+}
+.open .back{transform:rotateX(-76deg)}
+.face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:4px; background:var(--card); box-shadow:0 0 0 1px #000}
+.face .art{position:absolute; inset:8px; border-radius:2px; overflow:hidden}
+.face.rear{transform:rotateX(180deg); background:linear-gradient(170deg,var(--card-2),var(--card))}
+.pop{
+  position:absolute; left:12%; width:76%; height:92%; bottom:52%;
+  transform-origin:50% 100%; transform:translateZ(1px) rotateX(-2deg); opacity:0;
+  transition:transform .8s cubic-bezier(.4,0,.2,1.3) .25s, opacity .3s .25s;
+  filter:drop-shadow(1.6px 0 0 #fff) drop-shadow(-1.6px 0 0 #fff) drop-shadow(0 1.6px 0 #fff) drop-shadow(0 -1.6px 0 #fff) drop-shadow(0 6px 6px #0006);
+}
+.open .pop{transform:translateZ(1px) rotateX(-86deg); opacity:1}
+.closing .back{transition-duration:.55s}
+.closing .pop{transition-delay:0s; transition-duration:.4s}
+
+.caption{
+  max-width:min(var(--w),30ch); min-height:3.4em;
+  font-family:var(--hand); font-size:clamp(21px,5.4vw,25px); line-height:1.15; color:var(--paper);
+  text-wrap:balance; transition:opacity .4s;
+}
+.caption b{display:block; font-family:var(--body); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--blush); margin-bottom:6px}
+.controls{display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap}
+.btn{
+  appearance:none; border:1.5px solid #ffffff2a; background:#ffffff0d; color:var(--paper);
+  font:700 15px var(--body); padding:11px 18px; border-radius:999px; cursor:pointer;
+  transition:background .2s, transform .1s;
+}
+.btn:hover{background:#ffffff1c}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--blush); border-color:var(--blush); color:var(--ink)}
+.btn.primary:hover{background:#ffc1d7}
+.btn[disabled]{opacity:.35; cursor:default}
+
+/* envelope on the last page */
+.envelope{appearance:none; border:0; padding:0; background:none; cursor:pointer; width:100%; height:100%; display:block}
+.envelope svg{animation:nudge 2.2s ease-in-out infinite}
+@keyframes nudge{0%,80%,100%{transform:none}86%{transform:rotate(-4deg)}93%{transform:rotate(3deg)}}
+
+/* ---------- final love note ---------- */
+.overlay{position:fixed; inset:0; z-index:20; display:grid; place-items:center; overflow:hidden;
+  background:#0c0a10e6; padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  animation:fade .4s ease}
+@keyframes fade{from{opacity:0}}
+.note-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center}
+.strip{
+  position:relative; width:min(62vw,230px); padding:18px 10px 16px; background:var(--paper); color:var(--ink);
+  font-family:var(--hand); font-weight:700; text-align:center; border-radius:3px;
+  box-shadow:0 0 0 10px var(--card), 0 30px 60px -10px #000;
+  animation:rise .9s cubic-bezier(.3,1.4,.5,1) both;
+}
+@keyframes rise{from{transform:translateY(60vh) rotate(4deg)}}
+.strip .top{font-size:26px; letter-spacing:.06em}
+.strip .bottom{font-size:24px; letter-spacing:.04em; line-height:1.05; word-break:break-all; min-height:2.1em}
+.strip .bottom .heart{color:var(--lip)}
+.buddy{position:relative; width:110px; height:128px; margin:6px auto 8px; touch-action:none}
+.buddy svg{position:relative; z-index:2; width:100%; height:100%}
+.arm{position:absolute; top:62px; height:12px; width:var(--arm,14px); background:var(--paper); border:2.5px solid var(--ink); z-index:1; border-radius:6px}
+.arm.l{right:calc(50% + 40px); border-right:0; border-radius:6px 0 0 6px}
+.arm.r{left:calc(50% + 40px); border-left:0; border-radius:0 6px 6px 0}
+.hand{
+  position:absolute; top:-12px; width:34px; height:34px; border-radius:50%; padding:0;
+  background:var(--paper); border:2.5px solid var(--ink); cursor:grab; touch-action:none; z-index:3;
+}
+.arm.l .hand{left:-24px} .arm.r .hand{right:-24px}
+.hand::after{content:""; position:absolute; inset:-10px; border-radius:50%}
+.hand:active{cursor:grabbing}
+.hint .hand{animation:wiggle 1.6s ease-in-out infinite}
+@keyframes wiggle{50%{box-shadow:0 0 0 7px #f6aac699}}
+.pull-hint{font-family:var(--hand); font-size:20px; color:var(--muted)}
+.letter{max-width:32ch; font-family:var(--hand); font-size:clamp(21px,5.4vw,24px); line-height:1.2; color:var(--paper); text-wrap:balance}
+.letter .sig{display:block; margin-top:8px; color:var(--blush)}
+.heart-burst{position:fixed; pointer-events:none; z-index:30; color:var(--blush-deep); animation:floatup 1.8s ease-out forwards}
+@keyframes floatup{to{transform:translate(var(--dx),-55vh) rotate(var(--rot)); opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.15s!important; transition-delay:0s!important}
+}
+</style>
+</head>
+<body>
+
+<main class="app" id="app">
+  <div class="eyebrow" id="eyebrow">for you</div>
+  <button class="cover" id="cover" aria-label="Open the book">
+    <div class="cloud" id="question"></div>
+  </button>
+  <div class="tap" id="tap">tap to open</div>
+
+  <div class="scene" id="scene" hidden aria-live="polite"></div>
+  <p class="caption" id="caption" hidden></p>
+  <div class="controls" id="controls" hidden>
+    <button class="btn" id="prev">Back</button>
+    <button class="btn primary" id="next">Next universe</button>
+  </div>
+</main>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-label="I love you this much">
+  <div class="note-wrap">
+    <div class="strip">
+      <div class="top">I LOVE YOU</div>
+      <div class="buddy hint" id="buddy">
+        <div class="arm l"><button class="hand" id="handL" aria-label="Pull the left arm"></button></div>
+        <div class="arm r"><button class="hand" id="handR" aria-label="Pull the right arm"></button></div>
+        <svg viewBox="0 0 110 128" aria-hidden="true">
+          <path d="M14 124 C6 62 22 10 55 10 C88 10 104 62 96 124 Z" fill="#fbf7f1" stroke="#2b2230" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="44" cy="52" r="3.2" fill="#2b2230"/><circle cx="66" cy="52" r="3.2" fill="#2b2230"/>
+          <ellipse cx="35" cy="62" rx="6" ry="3.4" fill="#f6aac6" opacity=".85"/><ellipse cx="75" cy="62" rx="6" ry="3.4" fill="#f6aac6" opacity=".85"/>
+          <path d="M45 62 Q55 74 65 62" fill="none" stroke="#2b2230" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="bottom" id="thisMuch"></div>
+    </div>
+    <div class="pull-hint" id="pullHint">pull the arms out</div>
+    <p class="letter" id="letter" hidden></p>
+    <div class="controls" id="endControls" hidden>
+      <button class="btn" id="again">Read it again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   EDIT THESE: your words go here.
+   ============================================================ */
+const BOOK = {
+  forWho: "for you",                        // small line at the very top
+  question: "Do you think we're still together in every other universe?",
+  universes: [
+    "The one where we're astronauts and you still steal the window seat.",
+    "The one where we're two fish in a very big ocean, and I still find you.",
+    "The one where we're rooftop cats and you always get the warm spot.",
+    "The one where we're frogs sharing one tiny lily pad. Too small. Don't care.",
+    "The one from 66 million years ago. Still you.",
+    "The one where we're penguins and I give you my best pebble.",
+    "The one where we live five minutes apart and I walk you home every night."
+  ],
+  lastCaption: "And this one. Miles apart, and it's still you.",
+  letter: "Every universe I can think of has you in it. This one just has more miles. I'll close them one day.",
+  signature: "— me"
+};
+
+/* ---------- little drawing kit ---------- */
+const INK = "#2b2230", BLUSH = "#f6aac6";
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const heart = (x, y, s, c = "#e0567f") =>
+  `<path transform="translate(${x} ${y}) scale(${s})" d="M0 5 C-9 -3 -7 -12 0 -7 C7 -12 9 -3 0 5Z" fill="${c}"/>`;
+
+function bean(x, y, s, o) {
+  const b = o.body, flip = o.flip ? -1 : 1;
+  let under = "", over = "", ey = -34, ex = 8;
+  if (o.kind === "cat") {
+    under += `<polygon points="-19,-44 -15,-66 -4,-55" fill="${b}"/><polygon points="19,-44 15,-66 4,-55" fill="${b}"/>`;
+    under += `<path d="M20 -6 C40 -8 40 -34 30 -40" fill="none" stroke="${b}" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  if (o.kind === "frog") {
+    under += `<circle cx="-11" cy="-52" r="9" fill="${b}"/><circle cx="11" cy="-52" r="9" fill="${b}"/>`;
+    over += `<circle cx="-11" cy="-53" r="5" fill="#fff"/><circle cx="11" cy="-53" r="5" fill="#fff"/>`;
+    ey = -53; ex = 11;
+  }
+  if (o.kind === "dino") {
+    for (let i = 0; i < 5; i++) { const a = -60 + i * 22, r = 26;
+      const px = Math.sin(a * Math.PI / 180) * r, py = -32 - Math.cos(a * Math.PI / 180) * r;
+      under += `<polygon points="${px - 5},${py + 4} ${px * 1.25},${py * 1.12} ${px + 5},${py + 4}" fill="${o.spike}"/>`; }
+    under += `<path d="M-18 -8 C-36 -6 -40 -16 -44 -26" fill="none" stroke="${b}" stroke-width="7" stroke-linecap="round"/>`;
+  }
+  if (o.kind === "fish") {
+    under += `<path d="M-6 -2 L-22 12 L0 6 L22 12 L6 -2 Z" fill="${o.fin}"/>`;
+    under += `<path d="M-22 -30 L-34 -24 L-22 -18 Z" fill="${o.fin}"/><path d="M22 -30 L34 -24 L22 -18 Z" fill="${o.fin}"/>`;
+  }
+  let body = `<path d="M-22 0 C-27 -30 -16 -58 0 -58 C16 -58 27 -30 22 0 Z" fill="${b}"/>`;
+  if (o.belly) body += `<ellipse cx="0" cy="-17" rx="13" ry="15" fill="${o.belly}"/>`;
+  if (o.kind === "penguin") over += `<polygon points="-4,-29 4,-29 0,-23" fill="#f4a43b"/><ellipse cx="-9" cy="1" rx="6" ry="2.5" fill="#f4a43b"/><ellipse cx="9" cy="1" rx="6" ry="2.5" fill="#f4a43b"/>`;
+  if (o.hair) over += `<path d="M-14 -52 C-8 -66 8 -66 14 -52 C6 -58 -4 -58 -14 -52Z" fill="${o.hair}"/>`;
+  if (o.bow) over += `<path d="M6 -56 l10 -6 v12 Z M6 -56 l-10 -6 v12 Z" fill="${o.bow}" transform="translate(8 2)"/><circle cx="14" cy="-54" r="2.5" fill="${o.bow}"/>`;
+  const face = `<circle cx="${-ex}" cy="${ey}" r="2.6" fill="${INK}"/><circle cx="${ex}" cy="${ey}" r="2.6" fill="${INK}"/>`
+    + `<ellipse cx="-13" cy="-26" rx="4.5" ry="2.6" fill="${BLUSH}" opacity=".9"/><ellipse cx="13" cy="-26" rx="4.5" ry="2.6" fill="${BLUSH}" opacity=".9"/>`
+    + `<path d="M-4 -27 Q0 -22 4 -27" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>`;
+  let helmet = o.helmet ? `<circle cx="0" cy="-36" r="27" fill="#cfe8ff33" stroke="#e8f4ff" stroke-width="2.5"/><path d="M-16 -50 Q-10 -58 -2 -59" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>` : "";
+  return `<g transform="translate(${x} ${y}) scale(${s * flip} ${s})">${under}${body}${over}${face}${helmet}</g>`;
+}
+function couple(cx, cy, s, A, B, heartColor) {
+  const arm = `<path d="M${cx - 8 * s} ${cy - 14 * s} Q${cx} ${cy - 6 * s} ${cx + 8 * s} ${cy - 14 * s}" fill="none" stroke="${A.body}" stroke-width="${5 * s}" stroke-linecap="round"/>`;
+  return bean(cx - 26 * s, cy, s, A) + bean(cx + 26 * s, cy, s, { ...B, flip: true }) + arm + heart(cx, cy - 76 * s, 1.5 * s, heartColor);
+}
+const svg = (vb, inner) => `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${inner}</svg>`;
+const stars = (n, w, h, c = "#fff") => { let s = ""; for (let i = 0; i < n; i++) s += `<circle cx="${(rnd() * w).toFixed(1)}" cy="${(rnd() * h).toFixed(1)}" r="${(rnd() * 1.3 + .3).toFixed(2)}" fill="${c}" opacity="${(rnd() * .6 + .4).toFixed(2)}"/>`; return s; };
+const grad = (id, a, b) => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`;
+
+/* ---------- the universes ---------- */
+const SCENES = [
+  { name: "Space",
+    back: svg("0 0 300 200", `<rect width="300" height="200" fill="#121838"/>${stars(70, 300, 200)}<circle cx="236" cy="58" r="24" fill="#f2a6c6"/><ellipse cx="236" cy="58" rx="40" ry="9" fill="none" stroke="#ffd9e8" stroke-width="3" transform="rotate(-18 236 58)"/><circle cx="56" cy="44" r="10" fill="#c8c3e6"/><circle cx="53" cy="41" r="2.5" fill="#a49ec9"/>`),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#1b2150"/>${stars(40, 300, 200)}`),
+    pop: svg("0 0 200 150", `<path d="M60 120 C90 150 120 90 150 128" stroke="#e8f4ff" stroke-width="2" fill="none" stroke-dasharray="4 4"/>${couple(100, 128, 1.15, { body: "#f3f1ff", helmet: 1 }, { body: "#ffe1ec", helmet: 1 }, "#ff7aa8")}`) },
+  { name: "Ocean",
+    back: svg("0 0 300 200", grad("o", "#58c0d8", "#1b4f86") + `<rect width="300" height="200" fill="url(#o)"/><path d="M30 200 C20 160 44 140 30 100 M60 200 C70 170 50 150 62 120 M250 200 C238 160 262 150 250 110 M275 200 C285 175 268 160 280 140" stroke="#2e8f6c" stroke-width="7" fill="none" stroke-linecap="round"/>` + [[90, 60, 6], [104, 40, 4], [200, 50, 7], [214, 28, 4], [150, 22, 3]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#dff6ff" stroke-width="1.6" opacity=".8"/>`).join("")),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#e9d3a2"/><path d="M0 60 Q75 40 150 60 T300 60" stroke="#d4b97f" stroke-width="3" fill="none"/>`),
+    pop: svg("0 0 200 150", `<path d="M30 140 C34 112 26 100 36 86 M44 140 C42 120 50 112 46 98" stroke="#ff8a7a" stroke-width="6" fill="none" stroke-linecap="round"/>${couple(108, 132, 1.1, { body: "#ff9e5e", belly: "#ffd0a8", kind: "fish", fin: "#ff7b3a" }, { body: "#f39bc4", belly: "#ffd2e4", kind: "fish", fin: "#e070a2" }, "#ff5d8f")}`) },
+  { name: "Rooftops",
+    back: svg("0 0 300 200", `<rect width="300" height="200" fill="#242450"/>${stars(30, 300, 110)}<circle cx="70" cy="52" r="24" fill="#fdf1c2"/><circle cx="80" cy="46" r="22" fill="#242450"/><path d="M0 200 V130 L30 110 L60 130 V100 H100 V200 Z M110 200 V120 L150 92 L190 120 V200 Z M200 200 V108 H240 V90 H262 V108 H300 V200 Z" fill="#171528"/>` + [[18, 150], [74, 120], [142, 140], [158, 140], [214, 130], [276, 150], [244, 160]].map(([x, y]) => `<rect x="${x}" y="${y}" width="10" height="12" fill="#ffd56b" opacity=".9"/>`).join("")),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#5a3444"/>` + Array.from({ length: 9 }, (_, i) => `<path d="M0 ${i * 24 + 10} H300" stroke="#47283a" stroke-width="3"/>`).join("")),
+    pop: svg("0 0 200 150", `<path d="M10 150 L100 118 L190 150 Z" fill="#7a3d52"/><rect x="134" y="104" width="16" height="28" fill="#7a3d52"/>${couple(100, 124, 1.05, { body: "#2a2633", belly: "#3b3647", kind: "cat" }, { body: "#a9a2b8", belly: "#d6d0e0", kind: "cat" }, "#ff7aa8")}`) },
+  { name: "Pond",
+    back: svg("0 0 300 200", grad("p", "#d8f1d4", "#9fd2b8") + `<rect width="300" height="200" fill="url(#p)"/><ellipse cx="150" cy="190" rx="190" ry="60" fill="#6cb6a3"/><path d="M26 200 V110 M40 200 V96 M262 200 V104" stroke="#4f7d3f" stroke-width="4"/><ellipse cx="26" cy="106" rx="5" ry="14" fill="#7a4a2c"/><ellipse cx="40" cy="92" rx="5" ry="14" fill="#7a4a2c"/><ellipse cx="262" cy="100" rx="5" ry="14" fill="#7a4a2c"/><circle cx="236" cy="44" r="16" fill="#fff6c9"/>`),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#5aa996"/><ellipse cx="60" cy="140" rx="34" ry="14" fill="#4f9a49"/><ellipse cx="240" cy="70" rx="26" ry="11" fill="#4f9a49"/>`),
+    pop: svg("0 0 200 150", `<ellipse cx="100" cy="134" rx="78" ry="16" fill="#58a64f"/><path d="M100 134 L178 128 L176 140 Z" fill="#6cb6a3"/>${couple(100, 132, 1.05, { body: "#7cc95e", belly: "#d8f0a9", kind: "frog" }, { body: "#9fd96f", belly: "#ecf7c4", kind: "frog" }, "#ff6b9a")}<circle cx="40" cy="118" r="7" fill="#ffd1e3"/><circle cx="40" cy="118" r="3" fill="#ffe98a"/>`) },
+  { name: "Long ago",
+    back: svg("0 0 300 200", grad("d", "#ffbf73", "#ff8197") + `<rect width="300" height="200" fill="url(#d)"/><circle cx="70" cy="70" r="22" fill="#fff1b8"/><path d="M150 200 L210 90 L230 90 L290 200 Z" fill="#6b3a4f"/><path d="M210 90 Q214 70 206 52 Q222 64 230 90" fill="#ff6a3d"/><circle cx="214" cy="40" r="10" fill="#7d5468" opacity=".5"/><circle cx="226" cy="24" r="8" fill="#7d5468" opacity=".4"/><path d="M10 200 Q30 150 20 120 M20 160 L4 150 M22 140 L40 132 M24 176 L44 170" stroke="#3f7a4a" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#c98a5a"/><circle cx="70" cy="60" r="10" fill="#b37448"/><circle cx="210" cy="140" r="14" fill="#b37448"/>`),
+    pop: svg("0 0 200 150", `<ellipse cx="38" cy="138" rx="22" ry="10" fill="#8a7a72"/><ellipse cx="166" cy="140" rx="18" ry="8" fill="#8a7a72"/>${couple(100, 134, 1.05, { body: "#7ccf8a", belly: "#d7f2c8", kind: "dino", spike: "#3f9a5c" }, { body: "#b99be6", belly: "#eadcff", kind: "dino", spike: "#7d5fc0" }, "#ff4f86")}`) },
+  { name: "Ice",
+    back: svg("0 0 300 200", grad("i", "#bfe4f5", "#eef8fc") + `<rect width="300" height="200" fill="url(#i)"/><path d="M0 200 L40 120 L70 150 L110 90 L160 200 Z M170 200 L220 110 L250 140 L300 100 V200 Z" fill="#fff"/><path d="M110 90 L126 128 L104 120 Z M220 110 L232 150 L212 140 Z" fill="#d4ecf6"/>${stars(40, 300, 140, "#fff")}`),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#e8f5fb"/><path d="M0 100 Q150 80 300 110" stroke="#cfe6f2" stroke-width="4" fill="none"/>`),
+    pop: svg("0 0 200 150", `<path d="M20 146 Q100 126 180 146 Z" fill="#f4fbff"/>${couple(100, 140, 1.05, { body: "#262631", belly: "#fbf7f1", kind: "penguin" }, { body: "#34323f", belly: "#fbf7f1", kind: "penguin" }, "#ff6b9a")}<ellipse cx="100" cy="132" rx="6" ry="4" fill="#9aa3ad"/>`) },
+  { name: "Five minutes away",
+    back: svg("0 0 300 200", grad("c", "#ffb79c", "#8c6bc2") + `<rect width="300" height="200" fill="url(#c)"/><circle cx="150" cy="150" r="40" fill="#ffd9a0" opacity=".8"/><path d="M0 200 V120 H30 V90 H60 V140 H80 V70 H120 V200 Z M180 200 V100 H210 V60 H240 V130 H262 V95 H300 V200 Z" fill="#3b2d58"/>` + [[38, 100], [48, 116], [90, 84], [104, 104], [90, 124], [216, 74], [228, 96], [216, 118], [270, 108], [284, 130]].map(([x, y]) => `<rect x="${x}" y="${y}" width="7" height="9" fill="#ffd68a"/>`).join("")),
+    floor: svg("0 0 300 200", `<rect width="300" height="200" fill="#6d6577"/><path d="M0 100 H300" stroke="#f3e6a0" stroke-width="4" stroke-dasharray="20 16"/>`),
+    pop: svg("0 0 200 150", `<path d="M170 146 V40" stroke="#3b2d58" stroke-width="4"/><path d="M162 40 H178 L174 50 H166 Z" fill="#3b2d58"/><circle cx="170" cy="54" r="10" fill="#ffe29a" opacity=".6"/><rect x="40" y="118" width="110" height="8" rx="3" fill="#a86b4a"/><path d="M48 126 V144 M142 126 V144" stroke="#7a4a31" stroke-width="5"/>${couple(95, 122, 1, { body: "#fbe0c8", belly: "#7ab3e8", hair: "#3b2a24" }, { body: "#f7d2b6", belly: "#f6aac6", hair: "#6b3a26", bow: "#e0567f" }, "#ff5d8f")}`) }
+];
+
+const lip = (x, y, r, s) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><path d="M-20 0 C-12 -10 -4 -8 0 -4 C4 -8 12 -10 20 0 C12 12 -12 12 -20 0Z" fill="#b5172f"/><path d="M-18 0 C-8 3 8 3 18 0" stroke="#6e0b1c" stroke-width="2" fill="none"/></g>`;
+function kisses(w, h, n) { let s = `<rect width="${w}" height="${h}" fill="#1a0b10"/>`; for (let i = 0; i < n; i++) s += lip(rnd() * w, rnd() * h, rnd() * 80 - 40, rnd() * .6 + .7); return svg(`0 0 ${w} ${h}`, s); }
+const FINAL = {
+  back: kisses(300, 200, 40),
+  floor: kisses(300, 200, 34),
+  pop: `<button class="envelope" id="envelope" aria-label="Open the envelope">${svg("0 0 200 150", `<g transform="translate(100 96)"><rect x="-62" y="-40" width="124" height="80" rx="4" fill="#fbf7f1"/><path d="M-62 -40 L0 8 L62 -40" fill="none" stroke="#2b2230" stroke-width="2.5" stroke-linejoin="round"/><path d="M-62 40 L-16 -2 M62 40 L16 -2" stroke="#d9cfc4" stroke-width="2"/><circle cx="0" cy="8" r="11" fill="#b5172f"/>${heart(0, 8, .9, "#fbf7f1")}</g>`)}</button>`
+};
+
+/* ---------- book logic ---------- */
+const $ = id => document.getElementById(id);
+const total = SCENES.length;            // universes, then the final page
+let idx = -1, busy = false, current = null;
+
+$("eyebrow").textContent = BOOK.forWho;
+$("question").textContent = BOOK.question;
+
+function buildPage(p) {
+  const el = document.createElement("div");
+  el.className = "page entering";
+  el.innerHTML = `<div class="floor"><div class="floor-art">${p.floor}</div>
+      <div class="back"><div class="face front"><div class="art">${p.back}</div></div><div class="face rear"></div></div>
+      <div class="pop">${p.pop}</div></div>`;
+  return el;
+}
+const wait = ms => new Promise(r => setTimeout(r, matchMedia("(prefers-reduced-motion: reduce)").matches ? 60 : ms));
+
+async function go(to) {
+  if (busy || to < 0 || to > total) return;
+  busy = true;
+  const cap = $("caption");
+  cap.style.opacity = 0;
+  if (current) {
+    current.classList.add("closing"); current.classList.remove("open");
+    await wait(520);
+    current.classList.add("leaving");
+    await wait(380);
+    current.remove();
+  }
+  idx = to;
+  const isFinal = idx === total;
+  const p = isFinal ? FINAL : SCENES[idx];
+  current = buildPage(p);
+  $("scene").appendChild(current);
+  current.getBoundingClientRect();
+  current.classList.remove("entering");
+  await wait(260);
+  current.classList.add("open");
+  $("eyebrow").textContent = isFinal ? "this universe" : `universe ${idx + 1} of ${total}`;
+  cap.innerHTML = isFinal ? `<b>Ours</b>${esc(BOOK.lastCaption)}` : `<b>${esc(p.name)}</b>${esc(BOOK.universes[idx] || "")}`;
+  cap.style.opacity = 1;
+  $("prev").disabled = idx === 0;
+  $("next").textContent = isFinal ? "Open the envelope" : idx === total - 1 ? "One more" : "Next universe";
+  if (isFinal) $("envelope").addEventListener("click", e => { e.stopPropagation(); openNote(); });
+  await wait(700);
+  busy = false;
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+
+$("cover").addEventListener("click", async () => {
+  $("cover").classList.add("lift"); $("tap").hidden = true;
+  await wait(650);
+  $("cover").hidden = true;
+  ["scene", "caption", "controls"].forEach(id => $(id).hidden = false);
+  go(0);
+});
+$("next").addEventListener("click", () => idx === total ? openNote() : go(idx + 1));
+$("prev").addEventListener("click", () => go(idx - 1));
+$("scene").addEventListener("click", () => { if (idx < total) go(idx + 1); });
+document.addEventListener("keydown", e => {
+  if (!$("overlay").hidden || idx < 0) return;
+  if (e.key === "ArrowRight") idx === total ? openNote() : go(idx + 1);
+  if (e.key === "ArrowLeft") go(idx - 1);
+});
+
+/* ---------- I love you thiiiis much ---------- */
+let stretch = 0, maxStretch = 120, done = false;
+function render() {
+  document.querySelectorAll(".arm").forEach(a => a.style.setProperty("--arm", 14 + stretch + "px"));
+  const n = 1 + Math.round(stretch / 9);
+  $("thisMuch").innerHTML = `TH${"I".repeat(n)}S<br>MUCH <span class="heart">♥</span>`;
+  if (!done && stretch >= maxStretch - 2) celebrate();
+}
+function openNote() {
+  maxStretch = Math.max(50, Math.min(150, innerWidth / 2 - 90));
+  stretch = 0; done = false;
+  $("letter").hidden = true; $("endControls").hidden = true; $("pullHint").hidden = false; $("buddy").classList.add("hint");
+  render();
+  $("overlay").hidden = false;
+  setTimeout(() => $("handR").focus({ preventScroll: true }), 900);
+}
+function celebrate() {
+  done = true;
+  $("buddy").classList.remove("hint"); $("pullHint").hidden = true;
+  $("letter").innerHTML = `${esc(BOOK.letter)}<span class="sig">${esc(BOOK.signature)}</span>`;
+  $("letter").hidden = false; $("endControls").hidden = false;
+  for (let i = 0; i < 26; i++) {
+    const h = document.createElement("span");
+    h.className = "heart-burst"; h.textContent = "♥";
+    h.style.left = (innerWidth / 2 + (Math.random() - .5) * 240) + "px";
+    h.style.top = (innerHeight * .55 + Math.random() * 60) + "px";
+    h.style.fontSize = (14 + Math.random() * 22) + "px";
+    h.style.setProperty("--dx", (Math.random() - .5) * 200 + "px");
+    h.style.setProperty("--rot", (Math.random() - .5) * 80 + "deg");
+    h.style.animationDelay = Math.random() * .5 + "s";
+    document.body.appendChild(h); setTimeout(() => h.remove(), 2600);
+  }
+}
+["handL", "handR"].forEach(id => {
+  const hand = $(id), dir = id === "handL" ? -1 : 1;
+  let startX = 0, startS = 0;
+  hand.addEventListener("pointerdown", e => { e.preventDefault(); hand.setPointerCapture(e.pointerId); startX = e.clientX; startS = stretch; });
+  hand.addEventListener("pointermove", e => {
+    if (!hand.hasPointerCapture(e.pointerId)) return;
+    stretch = Math.max(0, Math.min(maxStretch, startS + (e.clientX - startX) * dir)); render();
+  });
+  hand.addEventListener("keydown", e => {
+    const out = (e.key === "ArrowRight") === (dir === 1);
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); stretch = Math.max(0, Math.min(maxStretch, stretch + (out ? 12 : -12))); render(); }
+  });
+});
+$("again").addEventListener("click", () => {
+  $("overlay").hidden = true;
+  if (current) current.remove(); current = null; busy = false;
+  go(0);
+});
+</script>
+</body>
+</html>
